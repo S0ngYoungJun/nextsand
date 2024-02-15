@@ -1,10 +1,10 @@
 "use client"
-import SandCanvas from '@/app/components/SandCanvas';
+import SandCanvas2 from '@/app/components/SandCanvas2';
 
 export default function Home() {
   return (
     <div>
-      <SandCanvas />
+      <SandCanvas2 />
     </div>
   );
 }

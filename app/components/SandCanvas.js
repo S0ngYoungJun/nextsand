@@ -10,7 +10,7 @@ const SandCanvas = () => {
   const createParticle = (x, y) => {
     setParticles(currentParticles => [
       ...currentParticles,
-      { x, y, radius: 2, speed: 4, stopped: false ,}
+      { x, y, radius: 4, speed: 4, stopped: false ,}
     ]);
   };
 
@@ -19,9 +19,9 @@ const SandCanvas = () => {
     const checkCollisionWithOtherParticles = (particle, otherParticles) => {
       for (let other of otherParticles) {
         if (other !== particle && other.stopped) {
-          const distance = Math.sqrt(Math.pow(other.x - particle.x, 2) + Math.pow(other.y - particle.y, 2));
+          const distance = Math.sqrt(Math.pow(other.x - particle.x, 1.5) + Math.pow(other.y - particle.y, 1.5));
           if (distance < particle.radius + other.radius) {
-            return other.y - other.radius * 2; // 충돌 위치 반환
+            return other.y - other.radius * 1.5; // 충돌 위치 반환
           }
         }
       }
