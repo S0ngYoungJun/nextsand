@@ -64,10 +64,11 @@ const SandCanvas = () => {
     if (isMouseDown) {
       creationInterval = setInterval(() => {
         const { x, y } = mousePosition;
-        const particle = Matter.Bodies.circle(x, y, 2, {
-          density: 0.0005,
+        const particle = Matter.Bodies.circle(x, y, 4, {
+          density: 0.0002,
           friction: 0.1,
-          restitution: 0.6,
+          frictionStatic: 0.5,
+          restitution: 0.2,
           render: { fillStyle: '#F4D03F' }
         });
         Matter.World.add(engineRef.current.world, particle);
