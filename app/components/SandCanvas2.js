@@ -4,8 +4,12 @@ import Matter from 'matter-js';
 const SandCanvas = () => {
   const sceneRef = useRef(null);
   const engineRef = useRef(null);
+  const [currentColor, setCurrentColor] = useState('#F4D03F'); 
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isMouseDown, setIsMouseDown] = useState(false);
+
+
+  const colors = ['#F4D03F', '#E74C3C', '#3498DB', '#2ECC71'];
 
   useEffect(() => {
     const engine = Matter.Engine.create();
@@ -64,15 +68,15 @@ const SandCanvas = () => {
     if (isMouseDown) {
       creationInterval = setInterval(() => {
         const { x, y } = mousePosition;
-        const particle = Matter.Bodies.circle(x, y, 4, {
-          density: 0.0002,
-          friction: 0.1,
-          frictionStatic: 0.5,
-          restitution: 0.2,
-          render: { fillStyle: '#F4D03F' }
+        const particle = Matter.Bodies.circle(x, y, 7, { 
+          density: 1000,  // 밀도를 조정하여 팅겨나가는 효과 조절
+          friction: 1000, // 마찰력 조정
+          frictionStatic: 0.9, // 공기 마찰력 조정
+          restitution: 0.5, //탄성 조정, 값이 낮을수록 팅겨나가는 효과 감소
+          render: { fillStyle: currentColor }
         });
         Matter.World.add(engineRef.current.world, particle);
-      }, 100);
+      }, 5);
     }
 
     return () => {
@@ -81,9 +85,22 @@ const SandCanvas = () => {
       document.removeEventListener('mouseup', handleMouseUp);
       document.removeEventListener('mousemove', handleMouseMove);
     };
-  }, [isMouseDown, mousePosition]);
+  }, [isMouseDown, mousePosition,currentColor]);
 
-  return <div ref={sceneRef} />;
+  return (
+    <div>
+      <div ref={sceneRef} />
+      <div style={{ position: 'absolute', top: 0, zIndex: 100 }}>
+        {colors.map(color => (
+          <button
+            key={color}
+            style={{ backgroundColor: color, width: '20px', height: '20px', margin: '5px' }}
+            onClick={() => setCurrentColor(color)}
+          />
+        ))}
+      </div>
+    </div>
+  );
 };
 
 export default SandCanvas;
