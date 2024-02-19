@@ -1,0 +1,60 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  margin:0;
+  padding:0;
+}
+
+
+.scene {
+  width: 80%; /* 캔버스 크기 조정 */
+  height: 600px; /* 고정 높이 or 원하는 높이 설정 */
+  border: 1px solid #ccc; /* 캔버스 테두리 */
+}
+
+
+.controls {
+  display: flex;
+  flex-direction: column; /* 버튼을 세로로 나열 */
+  width:20vw;
+  height:100vh;
+  justify-content: start;
+  align-items: center;
+  background-color: #ccc;
+}
+.color{
+  display:flex;
+  width:16vw;
+  height:7vh;
+}
+.text{
+  display:flex;
+  width:8vw;
+  height:7vh;
+  font-size: 130%;
+  align-items: center;
+  justify-content: center;
+}
+.input{
+  display:flex;
+  width:8vw;
+  height:7vh;
+  flex-wrap:wrap;
+}
+
+.scshot{
+  display:flex;
+  width:16vw;
+  height:7vh;
+  background-color: skyblue;
+  justify-content: center;
+  align-items: center;
+  border-radius: 7%;
+  font-size:140%;
+}
+
+.button{
+  border: 1px solid black;
+  width:4vw;
+  height:3.5vh;
+}

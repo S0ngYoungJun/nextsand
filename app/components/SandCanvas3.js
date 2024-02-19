@@ -6,8 +6,7 @@ const SandCanvas3 = () => {
   const [currentColor, setCurrentColor] = useState('#F4D03F');
   const [isMouseDown, setIsMouseDown] = useState(false);
   const mousePosition = useRef({ x: 0, y: 0 });
-  const [particleInterval, setParticleInterval] = useState(100);
-  const particles = useRef([]);
+  const particleTimer = useRef(null); // 파티클 생성을 위한 타이머 참조 추가
 
   useEffect(() => {
     const world = planck.World({
@@ -15,21 +14,11 @@ const SandCanvas3 = () => {
     });
 
     const canvas = sceneRef.current;
-    canvas.width = 800; // Canvas width in pixels
-    canvas.height = 600; // Canvas height in pixels
+    canvas.width = 800;
+    canvas.height = 600;
     const ctx = canvas.getContext('2d');
 
-    // Convert canvas dimensions to Planck scale (meters in the physics world)
-    const canvasWidthInMeters = canvas.width / 20;
-    const canvasHeightInMeters = canvas.height / 20;
-
-    // Create ground and walls as static bodies
-    world.createBody().createFixture(planck.Edge(planck.Vec2(0, 0), planck.Vec2(canvasWidthInMeters, 0)), { isStatic: true });
-    world.createBody().createFixture(planck.Edge(planck.Vec2(0, 0), planck.Vec2(0, canvasHeightInMeters)), { isStatic: true });
-    world.createBody().createFixture(planck.Edge(planck.Vec2(canvasWidthInMeters, 0), planck.Vec2(canvasWidthInMeters, canvasHeightInMeters)), { isStatic: true });
-    
     const addParticle = (x, y, color) => {
-
       const position = planck.Vec2(x, y);
       const particle = world.createDynamicBody(position);
       const circle = planck.Circle(0.5);
@@ -38,48 +27,48 @@ const SandCanvas3 = () => {
         friction: 0.3,
         restitution: 0.5,
       });
-
-      // Store particle with its color for rendering
-      particles.current.push({ particle, color });
     };
 
     const render = () => {
       world.step(1 / 60);
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      particles.current.forEach(({ particle, color }) => {
-        const position = particle.getPosition();
-        ctx.fillStyle = color;
-        ctx.beginPath();
-        ctx.arc(position.x * 20, canvas.height - position.y * 20, 10, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
       requestAnimationFrame(render);
     };
 
     render();
 
+    const updateMousePosition = (x, y) => {
+      const bounds = canvas.getBoundingClientRect();
+      mousePosition.current = {
+        x: (x - bounds.left) / 20,
+        y: (canvas.height - (y - bounds.top)) / 20,
+      };
+    };
+
     const handleMouseDown = (e) => {
       setIsMouseDown(true);
-      // Convert mouse position to world coordinates
-      const bounds = canvas.getBoundingClientRect();
-      const x = (e.clientX - bounds.left) / 20;
-      const y = (canvas.height - (e.clientY - bounds.top)) / 20;
-      addParticle(x, y, currentColor);
+      updateMousePosition(e.clientX, e.clientY);
+      addParticle(mousePosition.current.x, mousePosition.current.y, currentColor);
+
+      // 마우스를 누르고 있을 때 파티클을 지속적으로 생성하기 위한 타이머 설정
+      if (!particleTimer.current) {
+        particleTimer.current = setInterval(() => {
+          addParticle(mousePosition.current.x, mousePosition.current.y, currentColor);
+        }, 100); // 여기서 100ms는 파티클 생성 간격을 조절할 수 있는 값입니다.
+      }
     };
 
     const handleMouseMove = (e) => {
+      updateMousePosition(e.clientX, e.clientY);
       if (isMouseDown) {
-        const bounds = canvas.getBoundingClientRect();
-        const x = (e.clientX - bounds.left) / 20;
-        const y = (canvas.height - (e.clientY - bounds.top)) / 20;
-        addParticle(x, y, currentColor);
+        addParticle(mousePosition.current.x, mousePosition.current.y, currentColor);
       }
     };
 
     const handleMouseUp = () => {
       setIsMouseDown(false);
+      clearInterval(particleTimer.current);
+      particleTimer.current = null;
     };
 
     canvas.addEventListener('mousedown', handleMouseDown);
