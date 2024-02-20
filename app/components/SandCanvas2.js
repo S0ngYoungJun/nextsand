@@ -159,10 +159,10 @@ const SandCanvas = () => {
         <div className={styles.color2}>
           <div className={styles.input2}>{shapes.map(shape => (
             <button
-              key={shape}
-              className={styles.button}
-              onClick={() => setCurrentShape(shape)}
-            >
+            key={shape}
+            className={`${styles.button} ${currentShape === shape ? styles.activeButton : ''}`}
+            onClick={() => setCurrentShape(shape)}
+          >
               {shape}
             </button>
           ))}</div>
