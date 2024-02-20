@@ -11,7 +11,7 @@ const SandCanvas = () => {
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [currentShape, setCurrentShape] = useState('circle');
   const shapes = ['circle', 'rectangle', 'triangle', 'octagon'];
-  const [scale, setScale] = useState(2);
+  const [scale, setScale] = useState(3);
   const [backgroundColor, setBackgroundColor] = useState('#f3f3df'); 
 
   useEffect(() => {
@@ -24,17 +24,23 @@ const SandCanvas = () => {
       options: {
         wireframes: false,
         width: window.innerWidth /1.3,
-        height: window.innerHeight /1.3,
+        height: window.innerHeight,
         background: backgroundColor,
       }
     });
 
     //벽 조절하는 애들
-    const ground = Matter.Bodies.rectangle(window.innerWidth / 2, window.innerHeight-200 , window.innerWidth, 30, { isStatic: true });
-    const leftWall = Matter.Bodies.rectangle(-15, window.innerHeight / 2, 30, window.innerHeight, { isStatic: true });
-    const rightWall = Matter.Bodies.rectangle(window.innerWidth - 430, window.innerHeight / 2, 30, window.innerHeight, { isStatic: true });
-    const ceiling = Matter.Bodies.rectangle(window.innerWidth / 2, -30, window.innerWidth, 50, { isStatic: true });
-
+    const wallOptions = {
+      isStatic: true,
+      render: {
+        fillStyle: backgroundColor 
+      }
+    };
+    
+    const ground = Matter.Bodies.rectangle(window.innerWidth / 2, window.innerHeight, window.innerWidth, 10, wallOptions);
+    const leftWall = Matter.Bodies.rectangle(-15, window.innerHeight / 2, 30, window.innerHeight, wallOptions);
+    const rightWall = Matter.Bodies.rectangle(window.innerWidth / 1.28 , window.innerHeight / 2, 30, window.innerHeight, wallOptions);
+    const ceiling = Matter.Bodies.rectangle(window.innerWidth / 2, -30, window.innerWidth, 50, wallOptions);
     Matter.World.add(engine.world, [ground, leftWall, rightWall, ceiling]);
 
 
@@ -81,7 +87,7 @@ const SandCanvas = () => {
         let options = {
           density: 0.001,  // 밀도
           friction: 0.1,   // 마찰력
-          restitution: 0.3, // 탄성
+          restitution: 0.1, // 탄성
           render: { fillStyle: currentColor }
         };
     
@@ -132,7 +138,7 @@ const SandCanvas = () => {
       const imageUrl = canvas.toDataURL('image/png'); // Canvas 내용을 이미지 URL로 변환
       const link = document.createElement('a'); // 다운로드 링크 생성
       link.href = imageUrl;
-      link.download = 'world-screenshot.png'; // 다운로드될 파일명 지정
+      link.download = 'world-screenshot.jpg'; // 다운로드될 파일명 지정
       document.body.appendChild(link);
       link.click(); // 링크 클릭 이벤트를 프로그래매틱하게 실행하여 파일 다운로드
       document.body.removeChild(link); // 사용 후 링크 요소 제거
@@ -150,9 +156,8 @@ const SandCanvas = () => {
         <div className={styles.color}>
           <div className={styles.text}>배경색상</div>
           <input className={styles.input} type="color" value={backgroundColor} onChange={(e) => setBackgroundColor(e.target.value)} /></div>
-        <div className={styles.color}>
-          <div className={styles.text}>도형 모양</div>
-          <div className={styles.input}>{shapes.map(shape => (
+        <div className={styles.color2}>
+          <div className={styles.input2}>{shapes.map(shape => (
             <button
               key={shape}
               className={styles.button}

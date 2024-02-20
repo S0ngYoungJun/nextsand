@@ -27,6 +27,13 @@
   width:16vw;
   height:7vh;
 }
+
+.color{
+  display:flex;
+  width:16vw;
+  height:14vh;
+  align-items: center;
+}
 .text{
   display:flex;
   width:8vw;
@@ -39,7 +46,12 @@
   display:flex;
   width:8vw;
   height:7vh;
-  flex-wrap:wrap;
+}
+.input2{
+  display:flex;
+  width:16vw;
+  height:14vh;
+  flex-wrap: wrap;
 }
 
 .scshot{
@@ -55,6 +67,6 @@
 
 .button{
   border: 1px solid black;
-  width:4vw;
-  height:3.5vh;
+  width:8vw;
+  height:7vh;
 }
