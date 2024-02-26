@@ -6,6 +6,7 @@ import styles from "@/app/styles/SandCanvas.module.scss"
 const SandCanvas = () => {
   const sceneRef = useRef(null);
   const engineRef = useRef(null);
+  const renderRef = useRef(null);
   const [currentColor, setCurrentColor] = useState('#F4D03F'); 
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [isMouseDown, setIsMouseDown] = useState(false);
@@ -28,6 +29,9 @@ const SandCanvas = () => {
         background: backgroundColor,
       }
     });
+
+    renderRef.current = render; // render 인스턴스를 renderRef에 저장
+
 
     //벽 조절하는 애들
     const wallOptions = {
@@ -133,16 +137,31 @@ const SandCanvas = () => {
 
   // 스크린샷 및 저장
   const takeScreenshot = () => {
-    const canvas = document.querySelector('canvas'); // Matter.js가 렌더링하는 canvas 선택
-    if (canvas) {
-      const imageUrl = canvas.toDataURL('image/png'); // Canvas 내용을 이미지 URL로 변환
-      const link = document.createElement('a'); // 다운로드 링크 생성
-      link.href = imageUrl;
-      link.download = 'world-screenshot.jpg'; // 다운로드될 파일명 지정
-      document.body.appendChild(link);
-      link.click(); // 링크 클릭 이벤트를 프로그래매틱하게 실행하여 파일 다운로드
-      document.body.removeChild(link); // 사용 후 링크 요소 제거
-    }
+    const originalCanvas = renderRef.current.canvas;
+    const width = originalCanvas.width;
+    const height = originalCanvas.height;
+  
+    // 별도의 canvas 생성
+    const canvas = document.createElement('canvas');
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext('2d');
+  
+    // 배경 채우기
+    context.fillStyle = backgroundColor;
+    context.fillRect(0, 0, width, height);
+  
+    // 원본 canvas의 내용을 복사
+    context.drawImage(originalCanvas, 0, 0);
+  
+    // 새로운 canvas 내용을 이미지로 변환
+    const imageUrl = canvas.toDataURL('image/png');
+    const link = document.createElement('a');
+    link.href = imageUrl;
+    link.download = 'world-screenshot.png';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
