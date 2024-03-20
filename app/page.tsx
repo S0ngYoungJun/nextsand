@@ -13,7 +13,7 @@ export default function Home() {
   return (
     <div className={styles.world}>
       <div className={styles.main}>
-        <div className={styles.title}>This is block</div>
+        <div className={styles.title}>Build blocks</div>
         <button className={styles.go} onClick={handleButtonClick}>
           지금 시작하기
         </button>

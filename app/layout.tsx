@@ -9,7 +9,7 @@ const myFont = localFont({
 })
 
 export const metadata: Metadata = {
-  title: "Build a block",
+  title: "Build blocks",
   description: "도형을 쌓아서 그림을 그려보자",
 };
 
